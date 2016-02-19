@@ -4,28 +4,38 @@ var googleMap = (function googleMap(){
   // current zindex for top marker (will increment is a marker with a lower index is clicked))
   var curr_z_index;
 
+  // create an uninitialized map var
+  var map;
+
   // create the map
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: minZoomLevel,
-    center: new google.maps.LatLng(60.020952, -96.240234),
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  });
+  function createMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: minZoomLevel,
+      center: new google.maps.LatLng(60.020952, -96.240234),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
 
-  // Limit the zoom level
-  google.maps.event.addListener(map, 'zoom_changed', function() {
-    if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);
-  });
+    // Limit the zoom level
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+      if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);
+    });
 
-  // create a new node object on map click, in order to fill a new marker properties
-  google.maps.event.addListener(map, 'click', function(event) {
-    node = nodeObj.newNodeObj();
-    node.latLng = event.latLng;
-    var styles = 'border: 1px solid black; margin-top: 8px; background: orange; padding: 5px;';
-    mapIcon.addMarker(node, styles);
-  });
+    // create a new node object on map click, in order to fill a new marker properties
+    google.maps.event.addListener(map, 'click', function(event) {
+      node = nodeObj.newNodeObj();
+      node.latLng = event.latLng;
+      var styles = 'border: 1px solid black; margin-top: 8px; background: orange; padding: 5px;';
+      mapIcon.addMarker(node, styles);
+    });
+
+    return map;
+  }
 
   return {
     getMap: function getMap() {
+      if (!map) {
+        map = createMap();
+      }
       return map;
     }
   }
